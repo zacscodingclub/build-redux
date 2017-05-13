@@ -14,16 +14,22 @@ const onAddNote = () => {
 }
 
 const NoteApp = ({ notes }) => {
+  function buildNotesList() {
+    if(notes.length === 0) {
+      "Add a note now!"
+    } else {
+      return Object.keys(notes).map(id => {
+        <li className="note-list-item" key={id}>
+          {id}
+        </li>
+      })
+    }
+  }
+
   return (
     <div>
       <ul className="note-list">
-        {
-          Object.keys(notes).map(id => {
-            <li className="note-list-item" key={id}>
-              {id}
-            </li>
-          });
-        }
+        { buildNotesList() }
       </ul>
     </div>
   );
@@ -38,3 +44,5 @@ const renderApp = () => {
 
 window.state = initialState;
 renderApp();
+
+console.log
