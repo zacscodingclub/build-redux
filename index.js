@@ -15,14 +15,14 @@ const onAddNote = () => {
 
 const NoteApp = ({ notes }) => {
   function buildNotesList() {
-    if(notes.length === 0) {
-      "Add a note now!"
-    } else {
+    if(notes.length > 0) {
       return Object.keys(notes).map(id => {
         <li className="note-list-item" key={id}>
           {id}
         </li>
       })
+    } else {
+      return "Add a note now!"
     }
   }
 
@@ -44,5 +44,3 @@ const renderApp = () => {
 
 window.state = initialState;
 renderApp();
-
-console.log

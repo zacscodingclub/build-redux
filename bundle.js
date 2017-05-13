@@ -1,30 +1,34 @@
-const initialState = {
+"use strict";
+
+var initialState = {
   nextNoteId: 1,
   notes: {}
 };
 
-const onAddNote = () => {
-  const id = window.state.nextNoteId;
+var onAddNote = function onAddNote() {
+  var id = window.state.nextNoteId;
   window.state.notes[id] = {
-    id,
+    id: id,
     content: ''
   };
   window.state.nextNoteId++;
   renderApp();
 };
 
-const NoteApp = ({ notes }) => {
+var NoteApp = function NoteApp(_ref) {
+  var notes = _ref.notes;
+
   function buildNotesList() {
-    if (notes.length === 0) {
-      "Add a note now!";
-    } else {
-      return Object.keys(notes).map(id => {
+    if (notes.length > 0) {
+      return Object.keys(notes).map(function (id) {
         React.createElement(
           "li",
           { className: "note-list-item", key: id },
           id
         );
       });
+    } else {
+      return "Add a note now!";
     }
   }
 
@@ -39,11 +43,9 @@ const NoteApp = ({ notes }) => {
   );
 };
 
-const renderApp = () => {
+var renderApp = function renderApp() {
   ReactDOM.render(React.createElement(NoteApp, { notes: window.state.notes }), document.getElementById('root'));
 };
 
 window.state = initialState;
 renderApp();
-
-console.log;
