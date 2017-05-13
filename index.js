@@ -4,8 +4,43 @@ const UPDATE_NOTE = 'UPDATE_NOTE';
 const initialState = {
   nextNoteId: 1,
   notes: {}
-}
-window.state = initialState;
+};
+
+const validateAction = (action) => {
+  const isItAnObject = (!action || typeof action !== 'object'|| Array.isArray(action));
+  if (isItAnObject) {
+    throw new Error('Action must be an object');
+  }
+  const isItUndefined = typeof action.type === 'undefined';
+  if (isItUndefined) {
+    throw new Error('Action must have a type!');
+  }
+};
+
+const createStore = (reducer) => {
+  let state = undefined;
+  const subscribers = [];
+  const store = {
+    dispatch: (action) => {
+      validateAction(action);
+      state = reducer(state, action);
+      subscribers.forEach(handler => handler());
+    },
+    getState: () => state,
+    subscribe: handler => {
+      subscribers.push(handler);
+      return () => {
+        const index = subscribers.indexOf(handler);
+        if (index > 0) {
+          subscribers.splice(index, 1);
+        }
+      };
+    }
+  };
+  store.dispatch({ type: '@@redux/INIT' });
+  return store;
+};
+
 
 const handlers = {
   [CREATE_NOTE]: (state, action) => {
@@ -46,24 +81,14 @@ const reducer = (state = initialState, action) => {
   return state;
 };
 
-const onAddNote = () => {
-  const id = window.state.nextNoteId;
-  window.state.notes[id] = {
-    id,
-    content: ''
-  };
-  window.state.nextNoteId++;
-  renderApp();
-};
-
 const NoteApp = ({ notes }) => {
   function buildNotesList() {
     if(notes) {
       return Object.values(notes).map(({id, content}) => {
         return (
           <li className="note-list-item" key={id}>
-            {content}
-          </li>  
+            {id}. {content}
+          </li>
         )
       })
     }
@@ -81,18 +106,23 @@ const NoteApp = ({ notes }) => {
 
 const renderApp = () => {
   ReactDOM.render(
-    <NoteApp notes={window.state.notes} />,
+    <NoteApp notes={store.getState().notes} />,
     document.getElementById('root')
   );
 };
 
-const actions = [
-  {type: CREATE_NOTE},
-  {type: UPDATE_NOTE, id: 1, content: 'herro world!'},
-  {type: CREATE_NOTE},
-  {type: UPDATE_NOTE, id: 2, content: 'number 2!'}
-];
+const store = createStore(reducer);
 
-const state = actions.reduce(reducer, undefined);
+store.subscribe(() => {
+  renderApp();
+});
 
-renderApp();
+store.dispatch({
+  type: CREATE_NOTE
+});
+
+store.dispatch({
+  type: UPDATE_NOTE,
+  id: 1,
+  content: 'Hello, world!'
+});
