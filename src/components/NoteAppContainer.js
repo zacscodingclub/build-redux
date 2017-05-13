@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import connect from '../connect';
 import api from '../api';
+import { createNote } from '../actions';
 import { handlers, reducer, CREATE_NOTE, UPDATE_NOTE, CLOSE_NOTE, OPEN_NOTE } from '../reducers';
 
 import NoteApp from './NoteApp';
@@ -11,18 +12,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onAddNote: () => dispatch(
-    ({ dispatch }) => {
-      dispatch({ type: CREATE_NOTE });
-      api.createNote()
-            .then(({ id }) => {
-              dispatch({
-                type: CREATE_NOTE,
-                id
-              });
-            });
-    }
-  ),
+  onAddNote: () => dispatch(createNote()),
+
   onChangeNote: (id, content) => dispatch({
     type: UPDATE_NOTE,
     id,
