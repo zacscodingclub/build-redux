@@ -4,6 +4,12 @@ var _handlers;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _NoteApp = require('./NoteApp');
+
+var _NoteApp2 = _interopRequireDefault(_NoteApp);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var CREATE_NOTE = 'CREATE_NOTE';
@@ -97,41 +103,8 @@ var reducer = function reducer() {
   return state;
 };
 
-var NoteApp = function NoteApp(_ref) {
-  var notes = _ref.notes;
-
-  function buildNotesList() {
-    if (notes) {
-      return Object.values(notes).map(function (_ref2) {
-        var id = _ref2.id,
-            content = _ref2.content;
-
-        debugger;
-        return React.createElement(
-          'li',
-          { className: 'note-list-item', key: id },
-          id,
-          '. ',
-          content
-        );
-      });
-    }
-    return "Add a note now!";
-  }
-
-  return React.createElement(
-    'div',
-    null,
-    React.createElement(
-      'ul',
-      { className: 'note-list' },
-      buildNotesList()
-    )
-  );
-};
-
 var renderApp = function renderApp() {
-  ReactDOM.render(React.createElement(NoteApp, { notes: store.getState().notes }), document.getElementById('root'));
+  ReactDOM.render(React.createElement(_NoteApp2['default'], { notes: store.getState().notes }), document.getElementById('root'));
 };
 
 var store = createStore(reducer);

@@ -1,3 +1,5 @@
+import NoteApp from './NoteApp';
+
 const CREATE_NOTE = 'CREATE_NOTE';
 const UPDATE_NOTE = 'UPDATE_NOTE';
 
@@ -81,29 +83,6 @@ const reducer = (state = initialState, action) => {
   return state;
 };
 
-const NoteApp = ({ notes }) => {
-  function buildNotesList() {
-    if(notes) {
-      return Object.values(notes).map(({id, content}) => {
-        return (
-          <li className="note-list-item" key={id}>
-            {id}. {content}
-          </li>
-        )
-      })
-    }
-    return "Add a note now!";
-  }
-
-  return (
-    <div>
-      <ul className="note-list">
-        { buildNotesList() }
-      </ul>
-    </div>
-  );
-};
-
 const renderApp = () => {
   ReactDOM.render(
     <NoteApp notes={store.getState().notes} />,
@@ -124,5 +103,5 @@ store.dispatch({
 store.dispatch({
   type: UPDATE_NOTE,
   id: 1,
-  content: 'Hello, world!'
+  content: 'some change!'
 });
