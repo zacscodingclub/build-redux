@@ -1,4 +1,6 @@
-export const NoteEditor = ({ note, onChangeNote, onCloseNote }){
+import React from 'react';
+
+const NoteEditor = ({ note, onChangeNote, onCloseNote }) => {
   return (
     <div>
       <div>
@@ -15,4 +17,6 @@ export const NoteEditor = ({ note, onChangeNote, onCloseNote }){
       </button>
     </div>
   )
-}
+};
+
+export default NoteEditor;

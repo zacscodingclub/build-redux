@@ -1,9 +1,21 @@
 export const CREATE_NOTE = 'CREATE_NOTE';
 export const UPDATE_NOTE = 'UPDATE_NOTE';
+export const OPEN_NOTE = 'OPEN_NOTE';
+export const CLOSE_NOTE = 'CLOSE_NOTE';
 
 const initialState = {
-  nextNoteId: 1,
-  notes: {}
+  nextNoteId: 3,
+  notes: [
+    {
+      id: 1,
+      content: 'testing'
+    },
+    {
+      id: 2,
+      content: 'testing 2'
+    },
+  ],
+  openNoteId: null
 };
 
 export const reducer = (state = initialState, action) => {
@@ -23,24 +35,33 @@ export const handlers = {
     return {
       ...state,
       nextNoteId: id + 1,
-      notes: {
-        ...state.notes,
-        [id]: newNote
-      }
+      openNoteId: id,
+      notes: [...state.notes, newNote]
+    }
+  },
+  [OPEN_NOTE]: (state, action) => {
+    return {
+      ...state,
+      openNoteId: action.id
+    }
+  },
+  [CLOSE_NOTE]: (state, action) => {
+    return {
+      ...state,
+      openNoteId: null
     }
   },
   [UPDATE_NOTE]: (state, action) => {
     const { id, content } = action;
-    const editedNote = {
-      ...state.notes[id],
-      content
-    };
+    let editedNote = state.notes.filter(note => note.id === id)[0];
+    let reducedState = state.notes.filter(note => note.id !== id);
+    editedNote.content = content;
+
+    const newNotes = [...reducedState, editedNote];
+
     return {
       ...state,
-      notes: {
-        ...state.notes,
-        [id]: editedNote
-      }
+      notes: newNotes
     }
   }
 };
