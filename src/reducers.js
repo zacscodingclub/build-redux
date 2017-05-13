@@ -4,9 +4,9 @@ export const OPEN_NOTE = 'OPEN_NOTE';
 export const CLOSE_NOTE = 'CLOSE_NOTE';
 
 const initialState = {
-  nextNoteId: 2,
   notes: [],
-  openNoteId: null
+  openNoteId: null,
+  isLoading: false
 };
 
 export const reducer = (state = initialState, action) => {
@@ -18,15 +18,19 @@ export const reducer = (state = initialState, action) => {
 
 export const handlers = {
   [CREATE_NOTE]: (state, action) => {
-    const id = state.nextNoteId;
+    if (!action.id) {
+      return {
+        ...state,
+        isLoading: true
+      };
+    }
     const newNote = {
-      id,
+      id: action.id,
       content: ''
     };
     return {
       ...state,
-      nextNoteId: id + 1,
-      openNoteId: id,
+      openNoteId: action.id,
       notes: [...state.notes, newNote]
     }
   },

@@ -1,15 +1,18 @@
 import { handlers, reducer, validateAction } from './reducers';
 
-const createStore = (reducer) => {
+const createStore = (reducer, middleware) => {
   let state = undefined;
   const subscribers = [];
+  const coreDispatch = action => {
+    validateAction(action);
+    state = reducer(state, action);
+    subscribers.forEach(handler => handler());
+  };
+  const getState = () => state;
+
   const store = {
-    dispatch: (action) => {
-      validateAction(action);
-      state = reducer(state, action);
-      subscribers.forEach(handler => handler());
-    },
-    getState: () => state,
+    dispatch: coreDispatch,
+    getState: getState,
     subscribe: handler => {
       subscribers.push(handler);
       return () => {
@@ -20,7 +23,13 @@ const createStore = (reducer) => {
       };
     }
   };
-  store.dispatch({ type: '@@redux/INIT' });
+
+  if(middleware) {
+    const dispatch = action => store.dispatch(action);
+    store.dispatch = middleware({ dispatch, getState })(coreDispatch);
+  }
+
+  coreDispatch({ type: '@@redux/INIT' });
   return store;
 };
 
