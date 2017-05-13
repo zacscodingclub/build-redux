@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import Provider from './Provider';
 import createStore from './store';
 import { reducer } from './reducers';
-import NoteAppContainer from './NoteAppContainer';
+import NoteAppContainer from './components/NoteAppContainer';
 
 const store = createStore(reducer);
 
 ReactDOM.render(
-  <NoteAppContainer notes={store.getState().notes} store={store} />,
+  <Provider store={store}>
+    <NoteAppContainer />
+  </Provider>,
   document.getElementById('root')
 );

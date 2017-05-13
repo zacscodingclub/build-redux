@@ -4,17 +4,8 @@ export const OPEN_NOTE = 'OPEN_NOTE';
 export const CLOSE_NOTE = 'CLOSE_NOTE';
 
 const initialState = {
-  nextNoteId: 3,
-  notes: [
-    {
-      id: 1,
-      content: 'testing'
-    },
-    {
-      id: 2,
-      content: 'testing 2'
-    },
-  ],
+  nextNoteId: 2,
+  notes: [],
   openNoteId: null
 };
 
@@ -54,14 +45,12 @@ export const handlers = {
   [UPDATE_NOTE]: (state, action) => {
     const { id, content } = action;
     let editedNote = state.notes.filter(note => note.id === id)[0];
-    let reducedState = state.notes.filter(note => note.id !== id);
+    let reducedNotes = state.notes.filter(note => note.id !== id);
     editedNote.content = content;
-
-    const newNotes = [...reducedState, editedNote];
 
     return {
       ...state,
-      notes: newNotes
+      notes: [...reducedNotes, editedNote]
     }
   }
 };
