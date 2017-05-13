@@ -1,87 +1,10 @@
+import createStore from './store';
+import { handlers, reducer, validateAction, CREATE_NOTE, UPDATE_NOTE } from './reducers';
+
 import NoteApp from './NoteApp';
+import NoteEditor from './NoteEditor';
 
-const CREATE_NOTE = 'CREATE_NOTE';
-const UPDATE_NOTE = 'UPDATE_NOTE';
-
-const initialState = {
-  nextNoteId: 1,
-  notes: {}
-};
-
-const validateAction = (action) => {
-  const isItAnObject = (!action || typeof action !== 'object'|| Array.isArray(action));
-  if (isItAnObject) {
-    throw new Error('Action must be an object');
-  }
-  const isItUndefined = typeof action.type === 'undefined';
-  if (isItUndefined) {
-    throw new Error('Action must have a type!');
-  }
-};
-
-const createStore = (reducer) => {
-  let state = undefined;
-  const subscribers = [];
-  const store = {
-    dispatch: (action) => {
-      validateAction(action);
-      state = reducer(state, action);
-      subscribers.forEach(handler => handler());
-    },
-    getState: () => state,
-    subscribe: handler => {
-      subscribers.push(handler);
-      return () => {
-        const index = subscribers.indexOf(handler);
-        if (index > 0) {
-          subscribers.splice(index, 1);
-        }
-      };
-    }
-  };
-  store.dispatch({ type: '@@redux/INIT' });
-  return store;
-};
-
-
-const handlers = {
-  [CREATE_NOTE]: (state, action) => {
-    const id = state.nextNoteId;
-    const newNote = {
-      id,
-      content: ''
-    };
-    return {
-      ...state,
-      nextNoteId: id + 1,
-      notes: {
-        ...state.notes,
-        [id]: newNote
-      }
-    }
-  },
-  [UPDATE_NOTE]: (state, action) => {
-    const { id, content } = action;
-    const editedNote = {
-      ...state.notes[id],
-      content
-    };
-    return {
-      ...state,
-      notes: {
-        ...state.notes,
-        [id]: editedNote
-      }
-    }
-  }
-};
-
-const reducer = (state = initialState, action) => {
-  if(handlers[action.type]){
-    return handlers[action.type](state, action);
-  }
-  return state;
-};
+const store = createStore(reducer);
 
 const renderApp = () => {
   ReactDOM.render(
@@ -89,8 +12,6 @@ const renderApp = () => {
     document.getElementById('root')
   );
 };
-
-const store = createStore(reducer);
 
 store.subscribe(() => {
   renderApp();
